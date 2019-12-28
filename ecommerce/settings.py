@@ -154,7 +154,7 @@ ACCOUNT_EMAIL_VERIFICATION = 'none'
 
 
 AWS_ACCESS_KEY_ID = os.environ.get('S3_USER')
-AWS_SECRET_ACCESS_KEY = os.environ.get('S3_PASSWORD')
+AWS_SECRET_ACCESS_KEY = os.environ.get('S3_PASS')
 AWS_STORAGE_BUCKET_NAME = 'konig-files'
 
 AWS_S3_FILE_OVERWRITE = False
