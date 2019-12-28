@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'django.contrib.humanize',
     'crispy_forms',
+    'storages',
 ]
 
 MIDDLEWARE = [
@@ -150,3 +151,13 @@ CRISPY_TEMPLATE_PACK =  'bootstrap4'
 
 
 ACCOUNT_EMAIL_VERIFICATION = 'none'
+
+
+AWS_ACCESS_KEY_ID = os.environ.get('S3_USER')
+AWS_SECRET_ACCESS_KEY = os.environ.get('S3_PASSWORD')
+AWS_STORAGE_BUCKET_NAME = 'konig-files'
+
+AWS_S3_FILE_OVERWRITE = False
+AWS_DEFAULT_ACL = None
+
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
