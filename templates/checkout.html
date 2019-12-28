@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+{% load cart_template_tags %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+  <!--Main layout-->
+  <main class="mt-5 pt-4">
+    <div class="container wow fadeIn">
+
+      <!-- Heading -->
+      <h2 class="my-5 h2 text-center">Checkout</h2>
+
+      <!--Grid row-->
+      <div class="row">
+
+        <!--Grid column-->
+        <div class="col-md-8 mb-4">
+          <div class="col-md-6 mb-4" style="float:left;">
+            <div class="card" >
+              <div class='add-box'>
+                <h3 class='addh3 ml-3 mt-2'><b>Alamat pengiriman</b></h3><hr>
+                <p class='addh3 ml-3'>
+                {{ addr.user.username }}<br>
+                {{ addr.phone }}<br>
+                {{ addr.address }}<br>
+                {{ addr.address2 }}<br>
+                {{ addr.zip }}<br>
+                </p>
+              </div>
+                <a href= "{% url 'core:address' %}" class="btn btn-secondary btn-md waves-effect m-0">Gunakan alamat lain</a>
+            </div>
+          </div>
+          {{ order.courier }}
+
+          <div class="col-md-6 mb-4"  style="float:right;">
+            <div class="card">
+                <form class="card-body" method="POST" action="{% url 'core:add-courier' %}">
+                {% csrf_token %}
+                <h3 class='addh3 ml-3 mt-2'><b>Jasa pengiriman</b></h3><hr>
+                <select class="browser-default custom-select mr-3" id='courier' name='courier' style="width: 200px" onchange="this.form.submit()">
+                  <option  selected>Pilih kurir</option>
+                  {% for x, y in courier.fields.courier.choices %}
+                  <option value="{{ x }}">{{ y }}</option>
+                  {% endfor %}
+                </select>
+                </form>
+            </div>
+          </div>
+            <!-- <button class="btn btn-secondary btn-md waves-effect m-0" type="submit"></button> -->
+
+              <div style="clear: both;"></div>
+            <!--Card content-->
+          <div class="card">
+          
+            
+              <div class="d-block my-3">
+                  <a href = "{% url 'core:cekout' %}" class="btn btn-primary btn-lg btn-block">Lanjut ke pembayaran</a>
+              </div>
+        
+
+          </div>
+
+        </div>
+          <!--/.Card-->
+
+        <!--Grid column-->
+
+        <!--Grid column-->
+        <div class="col-md-4 mb-4" >
+
+          <!-- Heading -->
+          <h4 class="d-flex justify-content-between align-items-center mb-3">
+            <span class="text-muted">Keranjang</span>
+            <span class="badge badge-secondary badge-pill">{{ request.user|cart_item_count }}</span>
+          </h4>
+
+          <!-- Cart -->
+          
+          
+            
+          
+            
+          <ul class="list-group mb-3 z-depth-1">
+          {% for order_item in order.items.all %}
+            <li class="list-group-item d-flex justify-content-between lh-condensed">
+              <div>
+                <h6 class="my-0">{{ order_item.item.title }}</h6>
+                <small class="text-muted">x {{ order_item.quantity }} @ {% if order_item.item.discount_price %}<del>{{ order_item.item.price }}</del>  {{ order_item.item.discount_price }}{% else %}{{ order_item.item.price }} {% endif %}</small>
+              </div>
+              <span class="text-muted">Rp. {{ order_item.get_total_price }}</span>
+            </li>
+          {% endfor %}  
+          {% if order.coup %}
+            <li class="list-group-item d-flex justify-content-between bg-light">
+              <div class="text-success">
+                <h6 class="my-0">Promo code</h6>
+                <small>{{ order.coup.name }}</small>
+              </div>
+              <span class="text-success">-Rp. {{ order.coup_disc }}</span>
+            </li>
+          {% endif %}  
+          {% if order.courier %}
+            <li class="list-group-item d-flex justify-content-between bg-dark">
+              <div class="text-success">
+                <h6 class="my-0">Ongkos Kirim</h6>
+                <small>{{ order.courier.name }}</small>
+              </div>
+              <span class="text-success">Rp. {{ order.courier.amount }}</span>
+            </li>
+          {% endif %} 
+            <li class="list-group-item d-flex justify-content-between">
+              <span>Total</span>
+              {% if order.courier %}
+              <strong>Rp. {{ order.get_fin_total }}</strong>
+              {% else %}
+              <strong>Rp. {{ order.get_total }}</strong>
+              {% endif %}
+            </li>
+            
+          </ul>
+          <!-- Cart -->
+          
+          <!-- Promo code -->
+          <form class="card p-2" method='POST' action="{% url 'core:add-coupon' %}">
+            {% csrf_token %}
+            <div class="input-group">
+              <input type="text" id='coupon' name='coupon' class="form-control" placeholder="Promo code" aria-label="Recipient's username" aria-describedby="basic-addon2">
+              <div class="input-group-append">
+                <button class="btn btn-secondary btn-md waves-effect m-0" type="submit">Redeem</button>
+              </div>
+            </div>
+          </form>
+          <form class="card p-2" method='POST' action="{% url 'core:del-coupon' %}">
+            {% csrf_token %}
+            <button class="btn btn-danger btn-lg btn-block mt-2" type="submit">Use Later</button>
+          </form>
+        </div>
+        <!--Grid column-->
+      </div>
+
+      </div>
+      <!--Grid row-->
+
+    </div>
+  </main>
+  <!--Main layout-->
+
+  
+{% endblock content %}
+  

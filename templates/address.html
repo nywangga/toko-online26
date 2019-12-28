@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% load cart_template_tags %}
+
+{% block content %}
+
+  <!--Main layout-->
+  <main class="mt-5 pt-4">
+    <div class="container wow fadeIn">
+
+      <!-- Heading -->
+      <h2 class="my-5 h2 text-center">Alamat</h2>
+
+      <!--Grid row-->
+      <div class="row">
+
+        <!--Grid column-->
+        <div class="col-md-8 mb-4">
+
+          <div class="card">
+            <!--Card-->
+            <form class="card-body" method="POST" action='.'>
+            {% csrf_token %}
+
+              <!--address-->
+              <div class="md-form mb-5">
+                    <input type="text" id="address" name='address' class="form-control" placeholder="1234 Main St">
+                    <label for="address" class="">Address</label>
+                  </div>
+    
+                  <!--address-2-->
+                  <div class="md-form mb-5">
+                    <input type="text" id="address2" name='address2' class="form-control" placeholder="Apartment or suite">
+                    <label for="address2" class="">Address 2 (optional)</label>
+                  </div>
+    
+                  <!--Grid row-->
+                  <div class="row">
+    
+    
+                    <!--Grid column-->
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <label for="phone_num">No. Handphone</label>
+                        <input type="text" class="form-control" id="phone_num" name='phone_num' placeholder="+62">
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 mb-4">
+    
+                      <label for="zip">Kode Pos</label>
+                      <input type="text" class="form-control" id="zip" name='zip' placeholder="">
+                      <div class="invalid-feedback">
+                        Kode Pos harus diisi.
+                      </div>
+                    </div>
+                    
+                      
+                    <!--Grid column-->
+    
+                  </div>
+                  <!--Grid row-->
+    
+                  <hr>
+    
+                  <!-- <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="use_default_address" name='use_default_address'>
+                    <label class="custom-control-label" for="use_default_address">Gunakan alamat utama:{{ order.address.address|truncatechars:10 }}</label>
+                  </div> -->
+                  <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="set_default_address" name='set_default_address'>
+                    <label class="custom-control-label" for="set_default_address">Jadikan alamat ini alamat utama</label>
+                  </div>
+              <hr>
+
+
+            <!--Card content-->
+            
+              <!-- <h3>Cara pembayaran</h3>
+              <div class="d-block my-3">
+                {% for value, name in form.fields.payment_option.choices %}
+                <div class="custom-control custom-radio">
+                  <input id="{{ name }}" name="payment_option" value='{{ value }}' type="radio" class="custom-control-input" checked required>
+                  <label class="custom-control-label" for="{{ name }}">{{ name }}</label>
+                </div>
+                {% endfor %}
+              </div> -->
+        
+              <button class="btn btn-primary btn-lg btn-block" type="submit">Buat alamat baru</button>
+            </form>
+
+
+          </div>
+          <a href="{% url 'core:checkout' %}" style="color: rgb(255,255,255)" class="btn btn-secondary btn-md waves-effect mt-5 ">Kembali ke pembayaran</a>
+
+          <!--/.Card-->
+
+        </div>
+        <!--Grid column-->
+
+        <!--Grid column-->
+        <div class="col-md-4 mb-4">
+                <h3 class='addh3 ml-3 mt-2'><b>Alamat pengiriman</b></h3><hr>
+            {% for add in address %}
+
+             <div class="card mb-3">
+
+                <div class='add-box'>
+                    
+                    <p class='addh3 ml-3 mt-3'>
+                    {{ add.user.username }}
+                    <a href="{{ add.delete_address }}" class=" float-right mr-2 ">Hapus</a><br>
+                    {% if add.default %}<span class="badge badge-primary ml-2">Utama</span><br>{% endif %}
+                    {{ add.phone }}<br>
+                    {{ add.address }}<br>
+                    {{ add.address2 }}<br>
+                    {{ add.zip }}<br>
+                    </p>
+                </div>
+                <a href="{{ add.get_absolute_url }}" style="color: rgb(255,255,255)" class="btn btn-secondary btn-md waves-effect m-0 ">Jadikan alamat utama</a>
+            </div>
+            {% endfor %}
+
+        </div>
+        <!--Grid column-->
+
+      </div>
+      <!--Grid row-->
+
+    </div>
+  </main>
+  <!--Main layout-->
+
+  
+{% endblock content %}
+  

@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    
+    
+    <h1><center>{{ object.user.username }}'s order summary</center></h1><br>
+    <div class="container">
+        <div class="table-responsive text-nowrap">
+            <table class="table">
+            <thead>
+                <tr>
+                <th scope="col">#</th>
+                <th scope="col">Item</th>
+                <th scope="col">Discount</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Total</th>
+                </tr>
+
+                
+
+            </thead>
+            <tbody>
+                {% for order_item in object.items.all %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ order_item.item.title }} @ {{ order_item.item.price }}</td>
+                    <td>
+                    {% if order_item.item.discount_price %}
+                    @ {{ order_item.item.discount_price }}
+                    {% else %}
+                    0    
+                    {% endif %}</td>
+                    <td>
+                        <a href="{% url 'core:remove-one-from-cart' order_item.item.slug %}"><i class="fas fa-minus mr-3"></i></a>
+                        {{ order_item.quantity }}
+                        
+                        <a href="{% url 'core:add-to-cart' order_item.item.slug %}"><i class="fas fa-plus ml-3"></i></td></a>
+                    
+                    <td>
+                        
+                        Rp. {{ order_item.get_total_price }}
+                        {% if order_item.item.discount_price %}<span class="badge badge-primary ml-3">  Anda hemat Rp. {{ order_item.discount_saved }}</span>
+                        {% endif %}
+                        <a href= "{% url 'core:remove-from-cart' order_item.item.slug %}"><i class="fas fa-trash ml-3 float-right"></i></a>
+                    </td>
+                </tr>
+                {% empty %}
+                <td colspan="5">
+                Your cart is empty
+                <a href="/" style="color: rgb(255,255,255)" class="btn btn-primary float-right">
+                    Continue Shopping</a>
+                {% endfor %}
+                
+            {% if object.coup %}
+            <tr>
+                <td colspan="4 "><b>Promo Code Discount</b></td>
+                <td>-Rp. {{ object.coup_disc }}</td>
+            </tr>
+            {% endif %}
+
+            {% if object.get_total %}
+            <tr>
+                <td colspan="4"><b>Order Total</b></td>
+                <td>Rp. {{ object.get_total }}</td>
+            </tr>
+            <td colspan="5">
+            <a href="/checkout/" style="color: rgb(255,255,255)" class="btn btn-primary float-right">
+                    Checkout
+                    </a>
+            <a href="/" style="color: rgb(255,255,255)" class="btn btn-warning float-right mr-2">
+                Continue Shopping</a>
+            </td>
+            {% endif %}
+            </tbody>
+        </table>
+        </div>
+        </div>
+
+
+{% endblock content %}

@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load cart_template_tags %}
+{% load crispy_forms_tags %}
+
+
+{% block content %}
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script type="text/javascript"
+            src="https://app.sandbox.midtrans.com/snap/snap.js"
+            data-client-key="{{ client_key }}"></script>
+  <!--Main layout-->
+  <main class="mt-5 pt-4">
+    <div class="container wow fadeIn">
+
+      <!-- Heading -->
+      <div class='cart'>
+        <input type='hidden' id='snap_token' value="{{ token }}"/>
+        <div class='popup'>
+          <div class='row header'>
+            <span>
+            {% if order.ordered %}
+            <h2>Order sukses</h2>
+            {% else %}
+            <h2>Pembayaran ada masalah, silahkan coba lagi dalam beberapa saaat</h2>
+            {% endif %}
+                   </span>
+          </div>
+          {% if not order.ordered %}
+  
+          <a href="{% url 'core:cekout' %}"><button class='btn btn-warning '>Coba lagi</button></a>
+          <a href="{% url 'core:home' %}"><button class='btn btn-warning '>Kembali ke halaman utama</button></a>
+          {% endif %}
+          {% if order.ordered %}
+
+          <a href="{% url 'core:home' %}"><button class='btn btn-warning '>Kembali ke halaman utama</button></a>
+          {% endif %}
+
+      </div>
+  
+  
+
+    </div>
+  </main>
+  <!--Main layout-->
+
+  
+{% endblock content %}
