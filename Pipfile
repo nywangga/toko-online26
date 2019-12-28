@@ -6,9 +6,20 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-django = "*"
 gunicorn = "*"
 whitenoise = "*"
+django-allauth = "==0.36.0"
+django-countries = "==5.3.3"
+django-crispy-forms = "==1.7.2"
+django-debug-toolbar = "==1.10.1"
+django-filter = "==2.2.0"
+django-rest-framework = "==0.1.0"
+djangorestframework = "==3.10.3"
+djangorestframework-jwt = "==1.11.0"
+pipenv = "==2018.11.26"
+requests = "==2.21.0"
+Django = "==2.2"
+Pillow = "==6.0.0"
 
 [requires]
 python_version = "3.7"
