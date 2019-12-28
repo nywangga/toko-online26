@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
+    'whitenoise.runserver_nostatic',
     'core',
 
     'django.contrib.sites',
@@ -55,6 +55,7 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -132,9 +133,9 @@ STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR,'static')]
 VENV_PATH = os.path.dirname(BASE_DIR)
-STATIC_ROOT = os.path.join(VENV_PATH,'static_root')
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 MEDIA_ROOT = os.path.join(VENV_PATH,'media_root')
-
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
