@@ -77,6 +77,7 @@ class Order(models.Model):
     coup = models.ForeignKey('Coupon', on_delete=models.SET_NULL,blank=True, null=True)
     courier = models.ForeignKey('Courier', on_delete=models.SET_NULL,blank=True, null=True)
     iden = models.CharField(max_length=50)
+    total_amount = models.IntegerField(null=True)
 
     def __str__(self):
         return self.user.username
@@ -105,7 +106,8 @@ class Order(models.Model):
         return total
 
     def get_fin_total(self):
-        return self.get_total() + self.courier.amount
+        self.total_amount = self.get_total() + self.courier.amount
+        return self.total_amount
 
 
 class Address(models.Model):
@@ -149,7 +151,7 @@ class Courier(models.Model):
 
 
 class OrderStatus(models.Model):
-    
+
     transaction_id = models.CharField(max_length = 70)
     order_id = models.CharField(max_length = 70)
     gross_amount = models.CharField(max_length = 70)

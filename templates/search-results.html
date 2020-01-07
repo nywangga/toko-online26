@@ -5,22 +5,17 @@
   <main>
     <div class="container pt-4 mt-5">
 
-      <!--Navbar-->
       <nav class="navbar navbar-expand-lg navbar-dark mdb-color lighten-3 mt-3 mb-5 ">
 
-        <!-- Navbar brand -->
         <span class="navbar-brand">Categories:</span>
 
-        <!-- Collapse button -->
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#basicExampleNav"
           aria-controls="basicExampleNav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
 
-        <!-- Collapsible content -->
         <div class="collapse navbar-collapse" id="basicExampleNav">
 
-            <!-- Links -->
             <ul class="navbar-nav mr-auto">
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'core:home' %}">All
@@ -38,41 +33,24 @@
               </li>
   
             </ul>
-            <!-- Links -->
 
-            <!-- <form class="form-inline" method="GET" action="{% url 'core:sort-results' %}">
-              <select class="browser-default custom-select mr-3" id='name' name='s' style="width: 200px" onchange="this.form.submit()">
-                <option selected>Urutkan dari</option>
-                {% for x, y in courier.fields.name.choices %}
-                <option value="{{ x }}">{{ y }}</option>
-                {% endfor %}
-              </select>
-            </form>
-             -->
             <form class="form-inline" action="{% url 'core:search-results' %}" method="GET" >
               <div class="md-form my-0">
                 <input class="form-control mr-sm-2" name= 'q' type="text" placeholder="Search" aria-label="Search">
               </div>
             </form>
           </div>
-          <!-- Collapsible content -->
 
       </nav>
-      <!--/.Navbar-->
 
-      <!--Section: Products v.3-->
       <section class="text-center mb-4">
 
-        <!--Grid row-->
         <div class="row wow fadeIn">
           {% for item in object_list %}
-          <!--Grid column-->
           <div class="col-lg-3 col-md-6 mb-4">
 
-            <!--Card-->
             <div class="card">
 
-              <!--Card image-->
               <div class="view overlay">
                 <img src="{{ item.image.url }}" class="card-img-top"
                   alt="" >
@@ -80,11 +58,8 @@
                   <div class="mask rgba-white-slight"></div>
                 </a>
               </div>
-              <!--Card image-->
 
-              <!--Card content-->
               <div class="card-body text-center">
-                <!--Category & Title-->
                 <a href="" class="grey-text">
                   <h5>{{ item.get_category_display }}</h5>
                 </a>
@@ -101,18 +76,14 @@
                 </h4>
 
               </div>
-              <!--Card content-->
 
             </div>
-            <!--Card-->
 
           </div>
           {% endfor %}
 
       </section>
-      <!--Section: Products v.3-->
       {% if is_paginated %}
-      <!--Pagination-->
       <nav class="d-flex justify-content-center wow fadeIn">
         <ul class="pagination pg-blue">
 
@@ -142,10 +113,8 @@
       {% endif %}
         </ul>
       </nav>
-      <!--Pagination-->
 
     </div>
   </main>
-  <!--Main layout-->
 
   {% endblock content %}

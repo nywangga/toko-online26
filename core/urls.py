@@ -22,6 +22,7 @@ from .views import (
         SortResultsView,
         simple_checkout,
         update_transaction,
+        OrderAllView,
         )
 
 
@@ -41,7 +42,7 @@ urlpatterns = [
     path('sort/', SortResultsView.as_view(), name='sort-results'),
     path('cekout/', simple_checkout, name='cekout'),
     path('update-transaction/', update_transaction, name='update-transaction'),
-
+    path('order-history/', OrderAllView.as_view(), name='order-all'),
     path('checkout/', CheckoutView.as_view(), name='checkout'),
     path('add-coupon/', AddCouponView.as_view(), name='add-coupon'),
     path('del-coupon/', DelCouponView.as_view(), name='del-coupon'),

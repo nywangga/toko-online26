@@ -8,11 +8,10 @@
 <script type="text/javascript"
             src="https://app.sandbox.midtrans.com/snap/snap.js"
             data-client-key="{{ client_key }}"></script>
-  <!--Main layout-->
+
   <main class="mt-5 pt-4">
     <div class="container wow fadeIn">
 
-      <!-- Heading -->
       <div class='cart'>
         <input type='hidden' id='snap_token' value="{{ token }}"/>
         <div class='popup'>
@@ -33,6 +32,7 @@
           {% if order.ordered %}
 
           <a href="{% url 'core:home' %}"><button class='btn btn-warning '>Kembali ke halaman utama</button></a>
+          <a href="{% url 'core:order-all' %}"><button class='btn btn-secondary '>Riwayat Belanja</button></a>
           {% endif %}
 
       </div>
@@ -41,7 +41,6 @@
 
     </div>
   </main>
-  <!--Main layout-->
 
   
 {% endblock content %}

@@ -34,7 +34,6 @@ class CheckOutForm(forms.Form):
     address2 = forms.CharField(required=False)
     phone_num = forms.CharField(required=True,max_length=14)
     zip = forms.CharField(required=True)
-    # use_default_address = forms.BooleanField(required=True)
     set_default_address = forms.BooleanField(required=False)
     
 class PaymentOptForm(forms.Form):

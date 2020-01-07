@@ -6,7 +6,7 @@
 
       <!-- Brand -->
       <a class="navbar-brand waves-effect" href="{% url 'core:home' %}">
-        <strong class="blue-text">Konig</strong>
+        <strong class="blue-text">Shop</strong>
       </a>
 
       <!-- Collapse -->
@@ -21,7 +21,7 @@
         <!-- Left -->
         <ul class="navbar-nav mr-auto">
           <li class="nav-item">
-            <a class="nav-link waves-effect" href="#">Tentang Konig</a>
+            <a class="nav-link waves-effect" href="#">Tentang Kami</a>
           </li>
           <li class="nav-item">
             <a class="nav-link waves-effect" href="#">Hubungi Kami</a>
@@ -37,6 +37,9 @@
               <i class="fas fa-shopping-cart"></i>
               <span class="clearfix d-none d-sm-inline-block"> Keranjang </span>
             </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link waves-effect" href="{% url 'core:order-all' %}">Order History</a>
           </li>
           <li class="nav-item">
             <a class="nav-link waves-effect" href="{% url 'account_logout' %}">Keluar</a>

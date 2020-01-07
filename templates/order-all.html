@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    
+    
+    <h1><center>Order History</center></h1><br>
+    <div class="container">
+        <div class="table-responsive text-nowrap">
+            <table class="table">
+            <thead>
+                <tr>
+                <th scope="col">#</th>
+                <th scope="col">Order ID</th>
+                <th scope="col">Items</th>
+                <th scope="col">Total Price</th>
+                <th scope="col">Status</th>
+                </tr>
+
+                
+
+            </thead>
+            <tbody>
+                {% for order_done in object %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ order_done.iden }}</td>
+                    
+                    <td>
+                        {% for o in order_done.items.all %}
+                        <ol>{{ o.item.title }} x {{ o.quantity }}</ol>
+                        {% endfor %}
+
+                    </td>
+                    <td>Rp. {{ order_done.total_amount }}</td>
+                    <td>Sedang diproses</td>
+
+ 
+                        
+                </tr>
+               {% endfor %}
+            </tr> -->
+            <td colspan="5">
+            <a href="/" style="color: rgb(255,255,255)" class="btn btn-warning float-right mr-2">
+                Continue Shopping</a>
+            </td>
+            </tbody>
+        </table>
+        </div>
+        </div>
+
+
+{% endblock content %}

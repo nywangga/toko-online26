@@ -7,7 +7,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from django.views.generic import ListView,DetailView,View
 from .forms import ItemQuantForm,CheckOutForm, CouponForm,PaymentOptForm,CourierForm, SortForm
-from .models import Item,OrderItem,Order,Address,Coupon, Courier
+from .models import Item,OrderItem,Order,Address,Coupon, Courier, OrderStatus
 from django.core.paginator import Paginator
 from django.db.models import Q
 
@@ -15,45 +15,6 @@ from django.db.models import Q
 from midtransclient import Snap, CoreApi
 import datetime
 
-
-# @login_required
-# def add_many_to_cart(request,slug):
-#     item = get_object_or_404(Item, slug=slug)
-#     form = ItemQuantForm(request.POST or None)
-#     print(item)
-#     if form.is_valid():
-#         quant = form.cleaned_data.get('quant')
-#         print(quant)
-#         order_item,created = OrderItem.objects.get_or_create(
-#             user = request.user,
-#             ordered = False,
-#             item = item,
-#         )
-#         order_qs = Order.objects.filter(
-#             user = request.user,
-#             ordered=False,
-#         )
-#         if order_qs.exists():
-#             order = order_qs[0]
-#             if order.items.filter(item__slug=item.slug).exists():
-#                 order_item.quantity += quant
-#                 order_item.save()
-#                 messages.info(request, "This item was added to your cart")
-#                 return redirect("core:product", slug=slug)
-#             else:
-#                 order_item.quantity = quant
-#                 order_item.save()
-#                 order.items.add(order_item)
-#                 messages.info(request, "This item was added to your cart")
-#                 return redirect("core:product", slug=slug)
-#         else:
-#             order_item.quantity = quant
-#             order_item.save()
-#             ordered_date = timezone.now()
-#             order = Order.objects.create(user=request.user, ordered_date=ordered_date)
-#             order.items.add(order_item)
-#             messages.info(request, "This item was added to your cart")
-#             return redirect("core:product", slug=slug)
 
 
 @login_required
@@ -249,6 +210,9 @@ class AddCourier(View):
                     name = courier_name,
                     amount = 11000,
                 )
+            elif courier_name== 'PK':
+                messages.info(self.request, "Mohon pilih kurir")
+                return redirect('core:checkout')
             order.courier = courier_chosen
             order.save()
             courier_chosen.save()
@@ -271,6 +235,8 @@ class CheckoutView(View):
                     'addr': addr,
                     'courierer':courier,
                     }
+                order.address = addr
+                order.save()
                 return render(self.request, 'checkout.html', context)
             else:
                 messages.info(self.request, 'tolong buat alamat terlebih dahulu')
@@ -278,22 +244,7 @@ class CheckoutView(View):
         except ObjectDoesNotExist:
             messages.info(self.request, 'No active order')
             return redirect('/')
-    
-    # def post(self, *args, **kwargs):
-    #     form = PaymentOptForm(self.request.POST or None)
-    #     try:
-    #         if form.is_valid():
-    #             payment_option = form.cleaned_data.get('payment_option')
-    #             if payment_option == 'CC':
-    #                 return redirect('core:payment',payment_option='cc')
-    #             elif payment_option == 'DB':
-    #                 return redirect('core:payment',payment_option='db')
-    #             elif payment_option == 'OV':
-    #                 return redirect('core:payment',payment_option='ovo')
 
-    #     except ObjectDoesNotExist:
-    #         messages.error(self.request, 'You have no active order')
-    #         return redirect('core:checkout')
 
 class PaymentView(View):
     def get(self, *args, **kwargs):
@@ -352,7 +303,7 @@ class ProductView(DetailView):
                     order_item.quantity = quant
                     order_item.save()
                     ordered_date = timezone.now()
-                    order = Order.objects.create(user=request.user, ordered_date=ordered_date)
+                    order = Order.objects.create(user=self.request.user, ordered_date=ordered_date)
                     order.items.add(order_item)
                     messages.info(request, "This item was added to your cart")
                     return redirect("core:product", slug=slug)
@@ -373,7 +324,18 @@ class OrderSummaryView(LoginRequiredMixin, View):
             messages.info(self.request, 'order does not exist')
             return redirect('/')
 
-    
+class OrderAllView(LoginRequiredMixin, ListView):
+    def get(self, *args, **kwargs):
+        try:
+            order = Order.objects.filter(user=self.request.user, ordered=True).order_by('-ordered_date')
+            context={
+                'object': order,
+            }
+            print(self.request)
+            return render(self.request, 'order-all.html', context)
+        except ObjectDoesNotExist:
+            messages.info(self.request, 'order does not exist')
+            return redirect('/')
 
 
 class AddressView(View):
@@ -455,6 +417,7 @@ def del_address(request, pk):
 
 def simple_checkout(request):
     order = Order.objects.get(user=request.user, ordered=False)
+    print(request.user)
     snap = Snap(
         is_production=False,
         server_key='SB-Mid-server-8oJZqmeP0EVRpxNGG7pLNldc',
@@ -463,13 +426,13 @@ def simple_checkout(request):
     timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     transaction_token = snap.create_transaction_token({
         "transaction_details": {
-            "order_id": "order-id-python-"+timestamp,
+            "order_id": str(request.user) +"-order-id-python-"+timestamp,
             "gross_amount": order.get_fin_total()
         }, "credit_card":{
             "secure" : True
         }
     })
-    order_id =  "order-id-python-"+timestamp
+    order_id =  str(request.user) +"-order-id-python-"+timestamp
     order.iden = order_id
     order.save()
     context = {
@@ -483,20 +446,35 @@ def simple_checkout(request):
 
 def update_transaction(request):
     order = Order.objects.get(user=request.user, ordered=False)
+    
     snap = Snap(
         is_production=False,
         server_key='SB-Mid-server-8oJZqmeP0EVRpxNGG7pLNldc',
         client_key='SB-Mid-client-EGD425osvvKZSWw7',
     )
     status_response = snap.transactions.status(order.iden)
-    print(status_response)
     order_id = status_response['order_id']
     transaction_status = status_response['transaction_status']
     fraud_status = status_response['fraud_status']
-
-    print('Transaction notification received. Order ID: {0}. Transaction status: {1}. Fraud status: {2}'.format(order_id,
-            transaction_status,
-            fraud_status))
+    order_status = OrderStatus.objects.create(
+        order_id = status_response['order_id'],
+        transaction_status = status_response['transaction_status'],
+        fraud_status = status_response['fraud_status'],
+        transaction_id =["transaction_id"],
+        gross_amount = status_response["gross_amount"],
+        payment_type = status_response["payment_type"],
+        transaction_time = status_response["transaction_time"],
+        masked_card = status_response["masked_card"],
+        status_code = status_response["status_code"],
+        bank = status_response["bank"],
+        status_message = status_response["status_message"],
+        approval_code = status_response["approval_code"],
+        channel_response_code = status_response["channel_response_code"],
+        channel_response_message = status_response["channel_response_message"],
+        currency = status_response["currency"],
+        card_type = status_response["card_type"],
+    )
+    order_status.save()
 
     # Sample transaction_status handling logic
 
