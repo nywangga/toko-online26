@@ -7,6 +7,7 @@ PAYMENT_CHOICES = (
     )
 
 COURIER_CHOICES =(
+    ('PK', 'Pilihan Kurir'),
     ('JNE', 'JNE'),
     ('J&T', 'J&T'),
     ('TIKI', 'TIKI'),

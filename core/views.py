@@ -15,6 +15,47 @@ from django.db.models import Q
 from midtransclient import Snap, CoreApi
 import datetime
 
+
+# @login_required
+# def add_many_to_cart(request,slug):
+#     item = get_object_or_404(Item, slug=slug)
+#     form = ItemQuantForm(request.POST or None)
+#     print(item)
+#     if form.is_valid():
+#         quant = form.cleaned_data.get('quant')
+#         print(quant)
+#         order_item,created = OrderItem.objects.get_or_create(
+#             user = request.user,
+#             ordered = False,
+#             item = item,
+#         )
+#         order_qs = Order.objects.filter(
+#             user = request.user,
+#             ordered=False,
+#         )
+#         if order_qs.exists():
+#             order = order_qs[0]
+#             if order.items.filter(item__slug=item.slug).exists():
+#                 order_item.quantity += quant
+#                 order_item.save()
+#                 messages.info(request, "This item was added to your cart")
+#                 return redirect("core:product", slug=slug)
+#             else:
+#                 order_item.quantity = quant
+#                 order_item.save()
+#                 order.items.add(order_item)
+#                 messages.info(request, "This item was added to your cart")
+#                 return redirect("core:product", slug=slug)
+#         else:
+#             order_item.quantity = quant
+#             order_item.save()
+#             ordered_date = timezone.now()
+#             order = Order.objects.create(user=request.user, ordered_date=ordered_date)
+#             order.items.add(order_item)
+#             messages.info(request, "This item was added to your cart")
+#             return redirect("core:product", slug=slug)
+
+
 @login_required
 def add_to_cart(request, slug):
     item = get_object_or_404(Item, slug=slug)
@@ -211,7 +252,7 @@ class AddCourier(View):
             order.courier = courier_chosen
             order.save()
             courier_chosen.save()
-            return redirect('core:checkout')
+            return redirect('core:cekout')
 
 class CheckoutView(View):
     def get(self, *args, **kwargs):
@@ -228,7 +269,7 @@ class CheckoutView(View):
                     'form':form,
                     'coupon': coupon,
                     'addr': addr,
-                    'courier':courier,
+                    'courierer':courier,
                     }
                 return render(self.request, 'checkout.html', context)
             else:
@@ -275,42 +316,47 @@ class ProductView(DetailView):
         return render(self.request, 'product.html', context)
 
     def post(self, request,slug, *args, **kwargs):
-        item = get_object_or_404(Item, slug=slug)
-        form = ItemQuantForm(self.request.POST or None)
-        print(item)
-        if form.is_valid():
-            quant = form.cleaned_data.get('quant')
-            print(quant)
-            order_item,created = OrderItem.objects.get_or_create(
-                user = self.request.user,
-                ordered = False,
-                item = item,
-            )
-            order_qs = Order.objects.filter(
-                user = self.request.user,
-                ordered=False,
-            )
-            if order_qs.exists():
-                order = order_qs[0]
-                if order.items.filter(item__slug=item.slug).exists():
-                    order_item.quantity += quant
-                    order_item.save()
-                    messages.info(request, "This item was added to your cart")
-                    return redirect("core:product", slug=slug)
+        if not self.request.user.is_authenticated:
+            return redirect("/accounts/login")
+
+        else:
+            item = get_object_or_404(Item, slug=slug)
+            form = ItemQuantForm(self.request.POST or None)
+            print(item)
+            if form.is_valid():
+                quant = form.cleaned_data.get('quant')
+                print(quant)
+                order_item,created = OrderItem.objects.get_or_create(
+                    user = self.request.user,
+                    ordered = False,
+                    item = item,
+                )
+                order_qs = Order.objects.filter(
+                    user = self.request.user,
+                    ordered=False,
+                )
+                if order_qs.exists():
+                    order = order_qs[0]
+                    if order.items.filter(item__slug=item.slug).exists():
+                        order_item.quantity += quant
+                        order_item.save()
+                        messages.info(request, "This item was added to your cart")
+                        return redirect("core:product", slug=slug)
+                    else:
+                        order_item.quantity = quant
+                        order_item.save()
+                        order.items.add(order_item)
+                        messages.info(request, "This item was added to your cart")
+                        return redirect("core:product", slug=slug)
                 else:
                     order_item.quantity = quant
                     order_item.save()
+                    ordered_date = timezone.now()
+                    order = Order.objects.create(user=request.user, ordered_date=ordered_date)
                     order.items.add(order_item)
                     messages.info(request, "This item was added to your cart")
                     return redirect("core:product", slug=slug)
-            else:
-                order_item.quantity = quant
-                order_item.save()
-                ordered_date = timezone.now()
-                order = Order.objects.create(user=request.user, ordered_date=ordered_date)
-                order.items.add(order_item)
-                messages.info(request, "This item was added to your cart")
-                return redirect("core:product", slug=slug)
+                
 
 
 

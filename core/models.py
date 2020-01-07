@@ -148,3 +148,21 @@ class Courier(models.Model):
         return self.name
 
 
+class OrderStatus(models.Model):
+    
+    transaction_id = models.CharField(max_length = 70)
+    order_id = models.CharField(max_length = 70)
+    gross_amount = models.CharField(max_length = 70)
+    payment_type=  models.CharField(max_length = 70)
+    transaction_time = models.CharField(max_length = 70)
+    transaction_status = models.CharField(max_length = 70)
+    fraud_status = models.CharField(max_length = 70)
+    masked_card = models.CharField(max_length = 70)
+    status_code = models.CharField(max_length = 70)
+    bank=  models.CharField(max_length = 70)
+    status_message = models.CharField(max_length = 70)
+    approval_code=  models.CharField(max_length = 70)
+    channel_response_code = models.CharField(max_length = 70)
+    channel_response_message = models.CharField(max_length = 70)
+    currency = models.CharField(max_length = 70)
+    card_type = models.CharField(max_length = 70)

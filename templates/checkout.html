@@ -32,19 +32,18 @@
             </div>
           </div>
           {{ order.courier }}
+          <form class="card-body" method="POST" action="{% url 'core:add-courier' %}">
+            {% csrf_token %}
 
           <div class="col-md-6 mb-4"  style="float:right;">
             <div class="card">
-                <form class="card-body" method="POST" action="{% url 'core:add-courier' %}">
-                {% csrf_token %}
                 <h3 class='addh3 ml-3 mt-2'><b>Jasa pengiriman</b></h3><hr>
-                <select class="browser-default custom-select mr-3" id='courier' name='courier' style="width: 200px" onchange="this.form.submit()">
-                  <option  selected>Pilih kurir</option>
-                  {% for x, y in courier.fields.courier.choices %}
-                  <option value="{{ x }}">{{ y }}</option>
+                <select class="browser-default custom-select mr-3" id='courier' name='courier' style="width: 200px" >
+                  {% for x, y in courierer.fields.courier.choices %}
+                  <option value="{{ x }}" {% if x ==  order.courier %} selected  {% endif %}>{{ y }}</option>
                   {% endfor %}
                 </select>
-                </form>
+               
             </div>
           </div>
             <!-- <button class="btn btn-secondary btn-md waves-effect m-0" type="submit"></button> -->
@@ -55,12 +54,13 @@
           
             
               <div class="d-block my-3">
-                  <a href = "{% url 'core:cekout' %}" class="btn btn-primary btn-lg btn-block">Lanjut ke pembayaran</a>
+                  <!-- <a href = "{% url 'core:cekout' %}" class="btn btn-primary btn-lg btn-block" type="submit">Lanjut ke pembayaran</a> -->
+                  <button class="btn btn-primary btn-lg btn-block" type="submit">Lanjut ke pembayaran</button>
               </div>
-        
+            
 
           </div>
-
+        </form>
         </div>
           <!--/.Card-->
 
