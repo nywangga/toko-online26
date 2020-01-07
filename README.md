@@ -5,7 +5,7 @@ Test the live version at http://toko-online26.herokuapp.com/
 
 Simple and working Online Shop with:
 * Django back-end
-* Payement gateway integrated (midtrans)  
+* Payment gateway integrated (midtrans)  
 * RESTful API (Django rest framework)  
 
 
