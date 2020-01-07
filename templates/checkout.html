@@ -27,7 +27,6 @@
                 <a href= "{% url 'core:address' %}" class="btn btn-secondary btn-md waves-effect m-0">Gunakan alamat lain</a>
             </div>
           </div>
-          {{ order.courier }}
           <form class="card-body" method="POST" action="{% url 'core:add-courier' %}">
             {% csrf_token %}
             <div class="col-md-6 mb-4"  style="float:right;">
@@ -35,7 +34,7 @@
                   <h3 class='addh3 ml-3 mt-2'><b>Jasa pengiriman</b></h3><hr>
                   <select class="browser-default custom-select mr-3" id='courier' name='courier' style="width: 200px" >
                     {% for x, y in courierer.fields.courier.choices %}
-                    <option value="{{ x }}" {% if x ==  order.courier %} selected  {% endif %}>{{ y }}</option>
+                    <option value="{{ x }}">{{ y }}</option>
                     {% endfor %}
                   </select>
               </div>
