@@ -420,8 +420,8 @@ def simple_checkout(request):
     print(request.user)
     snap = Snap(
         is_production=False,
-        server_key='SB-Mid-server-8oJZqmeP0EVRpxNGG7pLNldc',
-        client_key='SB-Mid-client-EGD425osvvKZSWw7',
+        server_key='',
+        client_key='',
     )
     timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     transaction_token = snap.create_transaction_token({
@@ -449,8 +449,8 @@ def update_transaction(request):
     
     snap = Snap(
         is_production=False,
-        server_key='SB-Mid-server-8oJZqmeP0EVRpxNGG7pLNldc',
-        client_key='SB-Mid-client-EGD425osvvKZSWw7',
+        server_key='',
+        client_key='',
     )
     status_response = snap.transactions.status(order.iden)
     order_id = status_response['order_id']
